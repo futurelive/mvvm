@@ -1,8 +1,7 @@
 /**
- * Created by youngwind on 16/8/18.
+ * Created by Miro on 19/7/26.
  */
 
-exports.$mount = function () {
+exports.$mount = function() {
     this._compile();
 };
-

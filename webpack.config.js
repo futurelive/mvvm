@@ -1,39 +1,93 @@
 /**
- * Created by youngwind on 16/8/1.
+ * Created by Miro on 19/7/26.
  */
 
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const path = require('path')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const webpack = require('webpack')
 
 module.exports = {
-    watch: true,
+    mode: 'development',
     entry: {
-        index: ['./src/index.js'],
-        example: ['./example/index.js']
+        // index: ['./src/index.js'],
+        // example: ['./example/index.js']
+        index: ['./example/index.js'],
     },
     output: {
-        path: __dirname + '/dist',
-        filename: "[name].js"
+        path: path.resolve(__dirname, 'dist'),
+        filename: '[name].js'
+    },
+    devServer: {
+        contentBase: path.join(__dirname, 'dist'),
+        // compress: true,
+        port: 9000
     },
     module: {
-        preLoaders: [
+        rules: [{
+                test: /\.css$/,
+                use: [{
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {}
+                    },
+                    'css-loader'
+                ]
+            },
             {
-                test: /\.js$/,
-                loader: "eslint-loader",
-                exclude: /node_modules/
-            }
-        ],
-        loaders: [
+                test: /\.(png|jpg|gif)$/i,
+                use: [{
+                    loader: 'url-loader',
+                    options: {
+                        limit: 1024 * 80
+                    }
+                }]
+            },
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel'
-            }
+                test: /\.jsx?$/,
+                exclude: /(node_modules|bower_components)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            },
         ]
     },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+            name: 'common'
+        }
+    },
     plugins: [
-        new CopyWebpackPlugin([
-            {from: './example/index.html'}
-        ], {})
-    ]
-
-};
+        new MiniCssExtractPlugin({
+            // Options similar to the same options in webpackOptions.output
+            // both options are optional
+            filename: '[name].[hash].css'
+        }),
+        new HtmlWebpackPlugin({
+            // Also generate a test.html
+            filename: 'index.html',
+            template: './index.html',
+            // inject: false // 不自动引入
+        }),
+        new CleanWebpackPlugin(),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery'
+        }),
+        new webpack.DefinePlugin({
+            env: JSON.stringify(
+                'https://webpack.docschina.org/plugins/define-plugin/'
+            )
+        })
+    ],
+    resolve: {
+        alias: {
+            utils$: path.resolve(__dirname, './src/utils/common.js')
+        }
+    },
+    // devtool: ' source-map'
+}
