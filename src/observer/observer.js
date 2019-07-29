@@ -3,7 +3,7 @@
  * 观察对象
  */
 
-// webpack 2中不允许混用import和module.exports,
+// webpack 2中不允许混用import和module.exports,所以这里的这种引入方式会报错
 // import arrayAugmentations from '../observer/array-augmentations';
 
 const arrayAugmentations = require('../observer/array-augmentations')
@@ -19,7 +19,7 @@ const OBJECT = 1;
 function Observer(value, type) {
     this.value = value;
     // TODO 这里为什么enumerable一定要为false,否则会触发死循环
-    // value.$observer = this;
+    // value.$observer = this; 也就是observe实例
     Object.defineProperty(value, '$observer', {
         value: this,
         enumerable: false,
@@ -40,14 +40,17 @@ function Observer(value, type) {
  */
 Observer.prototype.walk = function(obj) {
     let val;
+    // for in 可枚举继承的属性都能遍历出来
     for (let key in obj) {
+        // 这个方法可以用来检测一个对象是否含有特定的自身属性；和 in 运算符不同，该方法会忽略掉那些从原型链上继承到的属性。
         if (!obj.hasOwnProperty(key)) return;
 
         val = obj[key];
 
-        // 递归
+        // 递归 监听嵌套数据
         this.observe(key, val);
 
+        // 对数据进行监听
         this.convert(key, val);
 
     }
@@ -81,10 +84,12 @@ Observer.prototype.convert = function(key, val) {
 
 
 Observer.prototype.observe = function(key, val) {
+    // 创建的新的observe对象
     let ob = Observer.create(val);
     if (!ob) return;
     ob.parent = {
         key,
+        // 执行环境的this 也就是外层this 外层的Observe实例
         ob: this
     }
 
@@ -97,10 +102,11 @@ Observer.prototype.link = function() {
 /**
  * 订阅事件
  * @param event {string} 事件类型
- * @param fn {Function} 对调函数
+ * @param fn {Function} 回调函数
  * @returns {Observer} 观察者对象
  */
 Observer.prototype.on = function(event, fn) {
+    // this 不同的observe对象
     this._cbs = this._cbs || {};
     if (!this._cbs[event]) {
         this._cbs[event] = []
@@ -119,6 +125,7 @@ Observer.prototype.notify = function(event, path, val) {
     let parent = this.parent;
     if (!parent) return;
     let ob = parent.ob;
+    // 调用vm.$data 的set回调
     ob.notify(event, path, val);
 };
 
@@ -126,6 +133,7 @@ Observer.prototype.notify = function(event, path, val) {
  * 触发执行回调函数
  */
 Observer.prototype.emit = function(event, path, val) {
+    // 当this是info或者address的时候 没有注册set事件  都直接return
     this._cbs = this._cbs || {};
     let callbacks = this._cbs[event]
 
@@ -133,6 +141,7 @@ Observer.prototype.emit = function(event, path, val) {
 
     callbacks = callbacks.slice(0);
     callbacks.forEach((cb, i) => {
+        // arguments传给$watch的回调函数使用
         callbacks[i].apply(this, arguments)
     });
 };

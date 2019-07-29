@@ -7,6 +7,7 @@ exports._compile = function() {
     this._compileNode(this.$template);
     this.$el.innerHTML = "";
     this.fragment.childNodes.forEach((child) => {
+        // appendChild具有移动的功能，所以需要用cloneNode，不改变循环次数
         this.$el.appendChild(child.cloneNode(true));
     });
 };

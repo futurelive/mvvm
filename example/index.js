@@ -18,9 +18,14 @@ const app = new Vue({
     }
 });
 
-app.$watch('name', function(val) {
-    console.log('我watch住了name');
+app.$watch('address.info', function(val) {
+    console.log(`我watch住了name`);
     console.log(`新的name为${val}`)
+});
+
+app.$watch('address.info.city', function(val) {
+    console.log('我watch住了city');
+    console.log(`新的city为${val}`)
 });
 
 window.app = app;
