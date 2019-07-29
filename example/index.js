@@ -1,10 +1,10 @@
 /**
- * Created by youngwind on 16/8/18.
+ * Created by Miro on 19/7/26.
  */
 
-import Bue from '../src/index';
+import Vue from '../src/index';
 
-new Bue({
+new Vue({
     el: '#app',
     data: {
         name: 'youngwind',
@@ -14,4 +14,3 @@ new Bue({
         }
     }
 });
-

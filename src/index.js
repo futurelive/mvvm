@@ -1,16 +1,16 @@
 /**
- * Created by youngwind on 16/8/18.
+ * Created by Miro on 19/7/29.
  */
 
-function Bue (options) {
+function Vue(options) {
     this._init(options);
 }
 
-Bue.prototype = {
-    constructor: Bue,
+Vue.prototype = {
+    constructor: Vue,
     ...require('./instance/init'),
     ...require('./instance/compile'),
     ...require('./api/lifecycle')
 };
 
-module.exports = Bue;
+module.exports = Vue;
