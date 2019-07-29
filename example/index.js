@@ -14,7 +14,10 @@ const app = new Vue({
                 city: "beijing"
             }
         },
-        message: ['a', 'b', 'c']
+        message: ['a', 'b', {
+            name: 'liangshaofeng',
+            age: 24
+        }]
     }
 });
 

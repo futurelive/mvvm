@@ -7,6 +7,7 @@
 // import arrayAugmentations from '../observer/array-augmentations';
 
 const arrayAugmentations = require('../observer/array-augmentations')
+const objectAugmentations = require('../observer/object-augmentations');
 
 const ARRAY = 0;
 const OBJECT = 1;
@@ -30,6 +31,7 @@ function Observer(value, type) {
         value.__proto__ = arrayAugmentations;
         this.link(value);
     } else if (type === OBJECT) {
+        value.__proto__ = objectAugmentations;
         this.walk(value);
     }
 }
@@ -95,8 +97,16 @@ Observer.prototype.observe = function(key, val) {
 
 };
 
-Observer.prototype.link = function() {
-
+/**
+ * 这个方法是用来处理如下情况: var ary = [1,{name:liangshaofeng}]
+ * 也就是说,当数组的某些项是一个对象的时候,
+ * 那么需要给这个对象创建observer监听它
+ * @param items {Array} 待处理数组
+ */
+Observer.prototype.link = function(items) {
+    items.forEach((value, index) => {
+        this.observe(index, value);
+    });
 };
 
 /**

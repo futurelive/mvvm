@@ -3,7 +3,7 @@
  * 定义一个对象,它的属性中有push等经过改写的数组方法
  */
 
-const aryMethods = ['push', 'pop'];
+const aryMethods = ['push', 'pop', 'shift', 'unshift', 'splice', 'sort', 'reverse'];
 // 新创建对象 指定的原型对象是Array.prototype
 const arrayAugmentations = Object.create(Array.prototype);
 
