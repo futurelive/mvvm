@@ -2,23 +2,46 @@
  * Created by Miro on 19/7/26.
  */
 
+let fragment, currentNodeList = []
+
 exports._compile = function() {
-    this.fragment = document.createDocumentFragment();
+    fragment = document.createDocumentFragment();
+
+    // 用一个栈来存储遍历过程中当前的父节点
+    currentNodeList.push(fragment);
+
     this._compileNode(this.$template);
-    this.$el.innerHTML = "";
-    this.fragment.childNodes.forEach((child) => {
-        // appendChild具有移动的功能，所以需要用cloneNode，不改变循环次数
-        this.$el.appendChild(child.cloneNode(true));
-    });
+
+    console.log(15, this.$el) // 获取的是模板
+    this.$el.parentNode.replaceChild(fragment, this.$el);
+    this.$el = document.querySelector(this.$options.el);
+    console.log(18, this.$el) // 获取的是模板渲染之后的dom
+
 };
 
 exports._compileElement = function(node) {
-    this.currentNode = document.createElement(node.tagName);
-    this.fragment.appendChild(this.currentNode);
+
+    let newNode = document.createElement(node.tagName);
+
+    // 处理节点属性
+    if (node.hasAttributes()) {
+        let attrs = node.attributes;
+        Array.from(attrs).forEach((attr) => {
+            newNode.setAttribute(attr.name, attr.value);
+        });
+    }
+
+
+    let currentNode = currentNodeList[currentNodeList.length - 1].appendChild(newNode);
+    // currentNodeList>fragment>div#app 
 
     if (node.hasChildNodes()) {
+        currentNodeList.push(currentNode);
+        // currentNodeList>fragment>div#app  div#app
         Array.from(node.childNodes).forEach(this._compileNode, this);
     }
+
+    currentNodeList.pop();
 };
 
 exports._compileText = function(node) {
@@ -37,16 +60,16 @@ exports._compileText = function(node) {
         nodeValue = nodeValue.replace(value, this.$data[property]);
     }, this);
 
-    this.currentNode.appendChild(document.createTextNode(nodeValue));
+    currentNodeList[currentNodeList.length - 1].appendChild(document.createTextNode(nodeValue));
 };
 
 exports._compileNode = function(node) {
     switch (node.nodeType) {
-        // text
+        // node
         case 1:
             this._compileElement(node);
             break;
-            // node
+            // text
         case 3:
             this._compileText(node);
             break;
