@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "test": "webpack-dev-server --save-dev",
-        "start": "webpack-dev-server",
+        "start": "fc-terminal-billboard && webpack-dev-server",
         "build": "fc-terminal-billboard && webpack"
     },
     "keywords": [],

@@ -84,7 +84,13 @@ Observer.prototype.convert = function(key, val) {
     })
 };
 
-
+/**
+ * 调用创建observer函数
+ * 并且判断是否有父节点,如果有,则存储父节点到自身,
+ * 目的是为了方便后面事件传播使用
+ * @param key {string} 键值
+ * @param val {Any} 属性值
+ */
 Observer.prototype.observe = function(key, val) {
     // 创建的新的observe对象
     let ob = Observer.create(val);
@@ -124,6 +130,42 @@ Observer.prototype.on = function(event, fn) {
     this._cbs[event].push(fn);
 
     // 级联调用
+    return this;
+};
+
+/**
+ * 取消订阅事件
+ * @param event {string} 事件类型
+ * @param fn {Function} 回调函数
+ * @returns {Observer} 观察者对象
+ */
+Observer.prototype.off = function(event, fn) {
+    this._cbs = this._cbs || {};
+
+    // 取消所有订阅事件
+    if (!arguments.length) {
+        this._cbs = {};
+        return this;
+    }
+
+    let callbacks = this._cbs[event];
+    if (!callbacks) return this;
+
+    // 取消特定事件
+    if (arguments.length === 1) {
+        delete this._cbs[event];
+        return this;
+    }
+
+    // 取消特定事件的特定回调函数
+    // 变量声明在括号里面就只需要声明一次
+    for (let i = 0, cb; i < callbacks.length; i++) {
+        cb = callbacks[i];
+        if (cb === fn) {
+            callbacks.splice(i, 1);
+            break;
+        }
+    }
     return this;
 };
 
