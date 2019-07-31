@@ -12,6 +12,7 @@ Vue.prototype = {
     ...require('./instance/compile'),
     ...require('./api/lifecycle'),
     ...require('./api/data'),
+    ...require('./instance/bindings'),
     observer: {...require('./observer/observer') }
 };
 

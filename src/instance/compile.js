@@ -2,65 +2,34 @@
  * Created by Miro on 19/7/26.
  */
 
-let fragment, currentNodeList = []
+const Directive = require('../directive')
 
 exports._compile = function() {
-    fragment = document.createDocumentFragment();
-
-    // 用一个栈来存储遍历过程中当前的父节点
-    currentNodeList.push(fragment);
-
-    this._compileNode(this.$template);
-
-    console.log(15, this.$el) // 获取的是模板
-    this.$el.parentNode.replaceChild(fragment, this.$el);
-    this.$el = document.querySelector(this.$options.el);
-    console.log(18, this.$el) // 获取的是模板渲染之后的dom
-
+    this._compileNode(this.$el);
 };
 
 exports._compileElement = function(node) {
-
-    let newNode = document.createElement(node.tagName);
-
-    // 处理节点属性
-    if (node.hasAttributes()) {
-        let attrs = node.attributes;
-        Array.from(attrs).forEach((attr) => {
-            newNode.setAttribute(attr.name, attr.value);
-        });
-    }
-
-
-    let currentNode = currentNodeList[currentNodeList.length - 1].appendChild(newNode);
-    // currentNodeList>fragment>div#app 
-
     if (node.hasChildNodes()) {
-        currentNodeList.push(currentNode);
-        // currentNodeList>fragment>div#app  div#app
         Array.from(node.childNodes).forEach(this._compileNode, this);
     }
-
-    currentNodeList.pop();
 };
 
 exports._compileText = function(node) {
-    let nodeValue = node.nodeValue;
-
-    if (nodeValue === '') return;
-
-
     let patt = /{{\w+}}/g;
-    let ret = nodeValue.match(patt);
+    let nodeValue = node.nodeValue;
+    let expressions = nodeValue.match(patt); // 这是一个数组,形如["{{name}}"];
 
-    if (!ret) return;
+    if (!expressions) return;
 
-    ret.forEach((value) => {
-        let property = value.replace(/[{}]/g, '');
-        nodeValue = nodeValue.replace(value, this.$data[property]);
-    }, this);
+    expressions.forEach((expression) => {
+        let el = document.createTextNode('');
+        // 在node之前插入子节点el
+        node.parentNode.insertBefore(el, node);
+        let property = expression.replace(/[{}]/g, '');
+        this._bindDirective('text', property, el);
+    });
 
-    currentNodeList[currentNodeList.length - 1].appendChild(document.createTextNode(nodeValue));
+    node.parentNode.removeChild(node);
 };
 
 exports._compileNode = function(node) {
@@ -76,4 +45,18 @@ exports._compileNode = function(node) {
         default:
             return;
     }
+};
+
+/**
+ * 生成指令
+ * @param name {string} 'text' 代表是文本节点
+ * @param value {string} 例如: user.name  是表示式
+ * @param node {Element} 指令对应的el
+ * @private
+ */
+exports._bindDirective = function(name, expression, node) {
+    let dirs = this._directives;
+    dirs.push(
+        new Directive(name, node, this, expression)
+    );
 };

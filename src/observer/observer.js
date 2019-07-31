@@ -12,15 +12,19 @@ const objectAugmentations = require('../observer/object-augmentations');
 const ARRAY = 0;
 const OBJECT = 1;
 
+let uid = 0;
+
 /**
  * 观察者构造函数
  * @param value {Object} 数据对象
+ *  @param type {Int} 数据对象的类型(分为对象和数组)
  * @constructor
  */
 function Observer(value, type) {
     this.value = value;
-    // TODO 这里为什么enumerable一定要为false,否则会触发死循环
-    // value.$observer = this; 也就是observe实例
+    this.id = ++uid
+        // TODO 这里为什么enumerable一定要为false,否则会触发死循环
+        // value.$observer = this; 将当前对象存储到当前对象的$observer属性中
     Object.defineProperty(value, '$observer', {
         value: this,
         enumerable: false,
@@ -129,7 +133,7 @@ Observer.prototype.on = function(event, fn) {
     }
     this._cbs[event].push(fn);
 
-    // 级联调用
+    // 这里return this是为了实现.on(...).on(...)这样的级联调用
     return this;
 };
 
