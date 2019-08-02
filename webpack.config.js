@@ -89,5 +89,5 @@ module.exports = {
             utils$: path.resolve(__dirname, './src/utils/common.js')
         }
     },
-    // devtool: ' source-map'
+    devtool: ' source-map'
 }

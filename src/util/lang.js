@@ -1,5 +1,5 @@
 /**
- * Created by Miro on 19/7/29.
+ * Created by Miro on 19/7/31.
  */
 
 /**
@@ -12,9 +12,19 @@
 exports.define = function(obj, key, val, enumerable) {
     Object.defineProperty(obj, key, {
         value: val,
-        // !取反 !!转换成boolean类型
         enumerable: !!enumerable,
         writable: true,
         configurable: true
-    })
+    });
+};
+
+/**
+ * 这不需要多加解释吧
+ * @param to
+ * @param from
+ */
+exports.extend = function(to, from) {
+    for (let key in from) {
+        to[key] = from[key];
+    }
 };

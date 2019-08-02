@@ -3,33 +3,53 @@
  */
 
 const Directive = require('../directive')
+const textParser = require('../parse/text')
+const dirParser = require('../parse/directive')
+const _ = require('../util')
+
+/**
+ * 整体思路: 利用递归的思想
+ */
 
 exports._compile = function() {
     this._compileNode(this.$el);
 };
 
+/**
+ * 渲染节点
+ * @param node {Element}
+ * @private
+ */
 exports._compileElement = function(node) {
     if (node.hasChildNodes()) {
         Array.from(node.childNodes).forEach(this._compileNode, this);
     }
 };
 
-exports._compileText = function(node) {
-    let patt = /{{\w+}}/g;
-    let nodeValue = node.nodeValue;
-    let expressions = nodeValue.match(patt); // 这是一个数组,形如["{{name}}"];
+/**
+ * 渲染文本节点
+ * @param node {Element}
+ * @private
+ */
+exports._compileTextNode = function(node) {
+    let tokens = textParser.parse(node.nodeValue);
+    if (!tokens) return;
 
-    if (!expressions) return;
-
-    expressions.forEach((expression) => {
-        let el = document.createTextNode('');
-        // 在node之前插入子节点el
-        node.parentNode.insertBefore(el, node);
-        let property = expression.replace(/[{}]/g, '');
-        this._bindDirective('text', property, el);
+    tokens.forEach((token) => {
+        if (token.tag) {
+            // 指令节点
+            let value = token.value;
+            let el = document.createTextNode('');
+            _.before(el, node);
+            this._bindDirective('text', value, el);
+        } else {
+            // 普通文本节点
+            let el = document.createTextNode(token.value);
+            _.before(el, node);
+        }
     });
 
-    node.parentNode.removeChild(node);
+    _.remove(node);
 };
 
 exports._compileNode = function(node) {
@@ -40,7 +60,7 @@ exports._compileNode = function(node) {
             break;
             // text
         case 3:
-            this._compileText(node);
+            this._compileTextNode(node);
             break;
         default:
             return;
@@ -54,9 +74,12 @@ exports._compileNode = function(node) {
  * @param node {Element} 指令对应的el
  * @private
  */
-exports._bindDirective = function(name, expression, node) {
+exports._bindDirective = function(name, value, node) {
+    let descriptors = dirParser.parse(value);
     let dirs = this._directives;
-    dirs.push(
-        new Directive(name, node, this, expression)
-    );
+    descriptors.forEach((descriptor) => {
+        dirs.push(
+            new Directive(name, node, this, descriptor)
+        )
+    });
 };

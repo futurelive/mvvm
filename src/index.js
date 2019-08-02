@@ -10,10 +10,15 @@ Vue.prototype = {
     constructor: Vue,
     ...require('./instance/init'),
     ...require('./instance/compile'),
-    ...require('./api/lifecycle'),
-    ...require('./api/data'),
+    ...require('./instance/element'),
     ...require('./instance/bindings'),
-    observer: {...require('./observer/observer') }
+    ...require('./instance/scope'),
+    ...require('./api/lifecycle'),
+    ...require('./api/data')
+};
+
+Vue.options = {
+    directives: {...require('./directives') }
 };
 
 module.exports = Vue;
