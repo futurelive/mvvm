@@ -43,7 +43,9 @@ exports._createBindingAt = function(path) {
     let pathAry = path.split('.');
 
     for (let i = 0; i < pathAry.length; i++) {
+        // user name
         let key = pathAry[i];
+        // b = this._rootBinding.name
         b = b[key] = b._addChild(key);
     }
     return b;
