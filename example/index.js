@@ -14,10 +14,19 @@ const app = new Vue({
                 city: "beijing"
             }
         },
+        user: {
+            name: 'Miro',
+            age: 24
+        },
         message: ['a', 'b', {
             name: 'liangshaofeng',
             age: 24
         }]
+    },
+    computed: {
+        info: function() {
+            return `计算出来的属性-> 姓名: ${this.user.name}, 年龄: ${this.user.age}`;
+        }
     }
 });
 
