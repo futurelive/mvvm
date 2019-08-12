@@ -11,8 +11,12 @@
     <div id="app">
         <p>姓名: {{name}}劳斯莱斯{{age}}</p>
         <p>年龄: {{age}}</p>
-        <p>城市: {{address.city}}</p>
+        <p>城市: {{address.info.city}}</p>
         <p>{{info}}</p>
+        <div v-if="show">
+            <h1>如果show为真,我们就显示{{user.name}}</h1>
+            <h1>如果show为假,我们就不显示{{user.age}}</h1>
+        </div>
     </div>
 </body>
 

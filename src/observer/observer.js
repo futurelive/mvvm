@@ -14,6 +14,8 @@ const OBJECT = 1;
 
 let uid = 0;
 
+Observer.emitGet = false;
+
 /**
  * 观察者构造函数
  * @param value {Object} 数据对象
@@ -24,7 +26,7 @@ function Observer(value, type) {
     this.value = value;
     this.id = ++uid
         // TODO 这里为什么enumerable一定要为false,否则会触发死循环
-        // value.$observer = this; 将当前对象存储到当前对象的$observer属性中
+        // value.$observer = this; 将当前对象存储到当前对象的$observer属性中 
     Object.defineProperty(value, '$observer', {
         value: this,
         enumerable: false,
@@ -75,6 +77,9 @@ Observer.prototype.convert = function(key, val) {
         configurable: true,
         get: function() {
             console.log('你访问了' + key);
+            if (Observer.emitGet) {
+                ob.notify('get', key);
+            }
             return val
         },
         set: function(newVal) {

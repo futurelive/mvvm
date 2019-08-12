@@ -2,6 +2,8 @@
  * Created by Miro on 19/7/29.
  */
 
+const _ = require('./util');
+
 function Vue(options) {
     this._init(options);
 }
@@ -14,11 +16,12 @@ Vue.prototype = {
     ...require('./instance/bindings'),
     ...require('./instance/scope'),
     ...require('./api/lifecycle'),
-    ...require('./api/data')
+    ...require('./api/data'),
+    ...require('./api/dom')
 };
 
 Vue.options = {
     directives: {...require('./directives') }
 };
 
-module.exports = Vue;
+module.exports = _.Vue = Vue;

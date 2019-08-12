@@ -7,6 +7,10 @@ const textParser = require('../parse/text')
 const dirParser = require('../parse/directive')
 const _ = require('../util')
 
+const priorityDirs = [
+    'if'
+];
+
 /**
  * 整体思路: 利用递归的思想
  */
@@ -21,6 +25,12 @@ exports._compile = function() {
  * @private
  */
 exports._compileElement = function(node) {
+    let hasAttributes = node.hasAttributes();
+
+    if (hasAttributes && this._checkPriorityDirs(node)) {
+        return;
+    }
+
     if (node.hasChildNodes()) {
         Array.from(node.childNodes).forEach(this._compileNode, this);
     }
@@ -82,4 +92,22 @@ exports._bindDirective = function(name, value, node) {
             new Directive(name, node, this, descriptor)
         )
     });
+    console.log(95, this._directives)
+};
+
+/**
+ * 检查node节点是否包含某些如 "v-if" 这样的高优先级指令
+ * 如果包含,那么就不用走原先的DOM遍历了, 直接走指令绑定
+ * @param node {Element}
+ * @private
+ */
+exports._checkPriorityDirs = function(node) {
+    for (let i = 0, length = priorityDirs.length; i < length; i++) {
+        let dir = priorityDirs[i];
+        let value = _.attr(node, dir);
+        if (value) {
+            this._bindDirective(dir, value, node);
+            return true;
+        }
+    }
 };
