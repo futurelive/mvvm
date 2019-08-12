@@ -2,15 +2,18 @@
  * Created by Miro on 19/7/31.
  */
 
+const tagRE = /\{?\{\{(.+?)\}\}\}?/g;
+
 /**
  * 将文本节点如"{{user.name}}1111",解析成["{{user.name}}","1111"]两个节点
  * @param text {String} 例如 "{{user.name}}1111"
  */
+
 exports.parse = function(text) {
-    if (text.trim() === '') return false;
-    let tokens = [];
-    let tagRE = /\{?\{\{(.+?)\}\}\}?/g;
-    let match, index, value, lastIndex = 0;
+    if (text.trim() === '' || !tagRE.test(text)) return null;
+    let tokens = [],
+        match, index, value, lastIndex = 0;
+    tagRE.lastIndex = 0;
     while (match = tagRE.exec(text)) {
         index = match.index;
         if (index > lastIndex) {

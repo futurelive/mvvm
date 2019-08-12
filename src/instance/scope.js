@@ -37,3 +37,25 @@ exports._initComputed = function() {
         }
     }
 };
+
+/**
+ * 初始化方法: 将method底下的方法proxy到vm实例上面去
+ * @private
+ */
+exports._initMethods = function() {
+    let { methods } = this.$options;
+    if (!methods) return;
+    for (let key in methods) {
+        this[key] = methods[key];
+    }
+};
+
+/**
+ * 初始化代理,将 $data里面的数据代理到vm实例上面去
+ * @private
+ */
+exports._initProxy = function() {
+    for (let key in this.$data) {
+        this[key] = this.$data[key];
+    }
+};

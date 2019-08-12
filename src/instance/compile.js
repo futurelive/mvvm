@@ -6,6 +6,7 @@ const Directive = require('../directive')
 const textParser = require('../parse/text')
 const dirParser = require('../parse/directive')
 const _ = require('../util')
+const config = require('../config')
 
 const priorityDirs = [
     'if'
@@ -27,8 +28,14 @@ exports._compile = function() {
 exports._compileElement = function(node) {
     let hasAttributes = node.hasAttributes();
 
+    // 解析高优指令
     if (hasAttributes && this._checkPriorityDirs(node)) {
         return;
+    }
+
+    // 解析属性
+    if (hasAttributes) {
+        this._compileAttrs(node);
     }
 
     if (node.hasChildNodes()) {
@@ -92,7 +99,6 @@ exports._bindDirective = function(name, value, node) {
             new Directive(name, node, this, descriptor)
         )
     });
-    console.log(95, this._directives)
 };
 
 /**
@@ -110,4 +116,40 @@ exports._checkPriorityDirs = function(node) {
             return true;
         }
     }
+};
+
+/**
+ * 循环解析属性(包括特殊属性和普通属性)
+ * @param node {Element}
+ * @private
+ */
+exports._compileAttrs = function(node) {
+    let attrs = Array.from(node.attributes);
+    let registry = this.$options.directives;
+    attrs.forEach((attr) => {
+        let attrName = attr.name;
+        let attrValue = attr.value;
+        if (attrName.indexOf(config.prefix) === 0) {
+            // 特殊属性 如: v-on:"submit"
+            let dirName = attrName.slice(config.prefix.length);
+            if (!registry[dirName]) return;
+            this._bindDirective(dirName, attrValue, node);
+        } else {
+            // 普通属性
+            this._bindAttr(node, attr);
+        }
+    });
+};
+
+/**
+ *
+ * @param node {Element}
+ * @param attr {Object} 如 {name:"data-id", id:"app"}
+ * @private
+ */
+exports._bindAttr = function(node, attr) {
+    let { name, value } = attr;
+    let tokens = textParser.parse(value);
+    if (!tokens) return;
+    this._bindDirective('attr', `${name}:${tokens[0].value}`, node);
 };

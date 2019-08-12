@@ -94,7 +94,7 @@ Watcher.prototype.beforeGet = function() {
  */
 Watcher.prototype.get = function() {
     this.beforeGet();
-    let value = this.getter.call(this.vm, this.vm.$data);
+    let value = this.getter.call(this.vm, this.vm);
     this.afterGet();
     return value;
 };

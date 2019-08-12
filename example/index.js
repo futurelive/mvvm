@@ -28,6 +28,11 @@ const app = new Vue({
         info: function() {
             return `计算出来的属性-> 姓名: ${this.user.name}, 年龄: ${this.user.age}`;
         }
+    },
+    methods: {
+        submit: function() {
+            console.log('提交');
+        }
     }
 });
 
