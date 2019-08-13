@@ -11,8 +11,19 @@ const Binding = require('../binding')
  * @private
  */
 exports._updateBindingAt = function() {
-    let path = arguments[1];
+    this._updateSelfBindingAt(...arguments);
+    this._updateChildrenBindingAt(...arguments);
+};
+
+/**
+ * 执行本实例发生了数据变动的watcher
+ * @param event {String} 事件类型
+ * @param path {String} 事件路径
+ * @private
+ */
+exports._updateSelfBindingAt = function(event, path) {
     let pathAry = path.split('.');
+    // TODO 此处代码有待优化,可以改成new Function
     let r = this._rootBinding;
     for (let i = 0, l = pathAry.length; i < l; i++) {
         let key = pathAry[i];
@@ -21,8 +32,18 @@ exports._updateBindingAt = function() {
     }
     let subs = r._subs;
     subs.forEach((watcher) => {
-        // watcher.cb.call(watcher);
-        watcher.cb()
+        watcher.cb();
+    });
+};
+
+/**
+ * 执行本实例所有子实例发生了数据变动的watcher
+ * @private
+ */
+exports._updateChildrenBindingAt = function() {
+    if (!this.$children.length) return;
+    this.$children.forEach((child) => {
+        child._updateBindingAt(...arguments);
     });
 };
 

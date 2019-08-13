@@ -3,6 +3,7 @@
  */
 
 const Observer = require('../observer/observer')
+const _ = require('../util');
 
 /**
  * 初始化观察独享
@@ -10,11 +11,7 @@ const Observer = require('../observer/observer')
  * @private
  */
 exports._initData = function(data) {
-    if (this.$parent) {
-        this.observer = this.$parent.observer;
-    } else {
-        this.observer = Observer.create(data);
-    }
+    this.observer = Observer.create(data);
 };
 
 /**
@@ -56,6 +53,6 @@ exports._initMethods = function() {
  */
 exports._initProxy = function() {
     for (let key in this.$data) {
-        this[key] = this.$data[key];
+        _.proxy(this, this.$data, key);
     }
 };

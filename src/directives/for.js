@@ -89,7 +89,7 @@ exports.build = function(data, index) {
     });
 
     // 处理别名
-    let alias = this.arg;
+    // let alias = this.arg;
     // vm.$add(alias, data);
 
     this.cacheVm(data, vm);
