@@ -22,6 +22,17 @@ exports.remove = function(el) {
 };
 
 /**
+ * 用新的节点代替旧的节点
+ * @param target {Element} 旧节点
+ * @param el {Element} 新节点
+ */
+exports.replace = function(target, el) {
+    let parent = target.parentNode;
+    parent.insertBefore(el, target);
+    parent.removeChild(target);
+};
+
+/**
  * 因为没有原声的insertAfter方法, 所以需要迂回处理一下
  * @param el
  * @param target

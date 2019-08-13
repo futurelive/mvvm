@@ -22,7 +22,19 @@ const app = new Vue({
         message: ['a', 'b', {
             name: 'liangshaofeng',
             age: 24
-        }]
+        }],
+        list: {
+            items: [{
+                    title: "aaa"
+                },
+                {
+                    title: "bbb"
+                },
+                {
+                    title: "ccc"
+                }
+            ]
+        }
     },
     computed: {
         info: function() {

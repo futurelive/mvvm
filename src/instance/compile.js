@@ -9,7 +9,8 @@ const _ = require('../util')
 const config = require('../config')
 
 const priorityDirs = [
-    'if'
+    'if',
+    'for'
 ];
 
 /**
