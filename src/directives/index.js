@@ -8,5 +8,6 @@ module.exports = {
     if: require('./if'),
     attr: require('./attr'),
     on: require('./on'),
-    for: require('./for')
+    for: require('./for'),
+    model: require('./model')
 };

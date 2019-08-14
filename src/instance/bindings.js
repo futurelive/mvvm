@@ -53,7 +53,6 @@ exports._updateChildrenBindingAt = function() {
  */
 exports._initBindings = function() {
     this._rootBinding = new Binding();
-    console.log(32, this.observer)
     this.observer.on('set', this._updateBindingAt.bind(this))
         .on('get', this._collectDep.bind(this));
 };
@@ -107,7 +106,6 @@ exports._createBindingAt = function(path) {
 exports._collectDep = function(event, path) {
     let watcher = this._activeWatcher;
     if (watcher) {
-        console.log(85, path)
         watcher.addDep(path);
     }
 };

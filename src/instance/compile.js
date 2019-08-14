@@ -10,7 +10,8 @@ const config = require('../config')
 
 const priorityDirs = [
     'if',
-    'for'
+    'for',
+    'model'
 ];
 
 /**

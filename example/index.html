@@ -1,17 +1,29 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>测试Bue</title>
+    <title>fc-vue</title>
 </head>
+
 <body>
 
-<div id="app">
-    <p>姓名: {{name}}劳斯莱斯{{age}}</p>
-    <p>年龄: {{age}}</p>
-    <p>城市: {{address.city}}</p>
-</div>
-
-<script src="./example.js"></script>
+    <div id="app">
+        <p data-name="{{user.name}}">姓名: {{name}}劳斯莱斯{{age}}</p>
+        <p>年龄: {{age}}</p>
+        <p class="{{user.name}}">城市: {{address.info.city}}</p>
+        <p>{{info}}</p>
+        <button v-on="click:submit">提交</button>
+        <div v-if="show">
+            <h1>如果show为真,我们就显示{{user.name}}</h1>
+            <h1>如果show为假,我们就不显示{{user.age}}</h1>
+        </div>
+        <ul>
+            <li v-for="item:list.items">{{item.title}}</li>
+        </ul>
+        <input type="text" v-model="owner.name" placeholder="edit me...">
+        <p>Message's name is: {{owner.name}}</p>
+    </div>
 </body>
+
 </html>

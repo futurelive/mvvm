@@ -7,6 +7,9 @@ import Vue from '../src/index';
 const app = new Vue({
     el: '#app',
     data: {
+        owner: {
+            name: 'Miro'
+        },
         show: true,
         name: 'Miro',
         age: 18,

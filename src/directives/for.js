@@ -5,18 +5,18 @@
 const config = require('../config');
 const _ = require('../util');
 
-// 用唯一的uid来区分不同的repeat实例
+// 用唯一的uid来区分不同的for实例
 let uid = 0;
 
 exports.bind = function() {
-    this.id = `__v_repeat_${++uid}`;
-    this.ref = document.createComment(`${config.prefix}repeat`);
+    this.id = `__v_for_${++uid}`;
+    this.ref = document.createComment(`${config.prefix}for`);
     _.replace(this.el, this.ref);
 };
 
 exports.update = function(data) {
     if (data && !Array.isArray(data)) {
-        _.warn(`Invalid value for v-repeat:${data}\nExpects Array`);
+        _.warn(`Invalid value for v-for:${data}\nExpects Array`);
         return;
     }
     this.vms = this.diff(
@@ -114,13 +114,13 @@ exports.build = function(data, index) {
 
 /**
  * 根据data取原有的vm实例
- * 其实就是把repeat实例的id存储到对应的数据的id字段上
+ * 其实就是把for实例的id存储到对应的数据的id字段上
  * 这样就知道某个数据是否是对应之前的某个实例
  * @param data {Object}
  * @returns {*}
  */
 exports.getVm = function(data) {
-    // 其实就是把repeat实例的id存储到对应的数据的id字段上
+    // 其实就是把for实例的id存储到对应的数据的id字段上
     // 这样我就知道某个数据是否是对应之前的某个实例
     return data[this.id];
 };
