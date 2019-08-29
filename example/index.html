@@ -1,28 +1,29 @@
-<!doctype html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>fc-vue</title>
 </head>
 
 <body>
-
     <div id="app">
-        <p data-name="{{user.name}}">姓名: {{name}}劳斯莱斯{{age}}</p>
-        <p>年龄: {{age}}</p>
-        <p class="{{user.name}}">城市: {{address.info.city}}</p>
-        <p>{{info}}</p>
-        <button v-on="click:submit">提交</button>
-        <div v-if="show">
-            <h1>如果show为真,我们就显示{{user.name}}</h1>
-            <h1>如果show为假,我们就不显示{{user.age}}</h1>
-        </div>
+        <p data-name="{{name}}">今天{{name}}来到我们的公开课了</p>
+        <p>{{user.name}}</p>
+        <p>{{address.info.city}}</p>
+        双向绑定：<input type="text" v-model="user.name">
+        <p>这是双向绑定的数据： {{user.name}}</p>
         <ul>
-            <li v-for="item:list.items">{{item.title}}</li>
+            <li v-for="item:pubClass">{{item.name}}的兴趣是： {{item.inter}},支撑兴趣的工资是{{item.salary}}</li>
         </ul>
-        <input type="text" v-model="owner.name" placeholder="edit me...">
-        <p>Message's name is: {{owner.name}}</p>
+        <p>计算属性{{info}}</p>
+        <button v-on="click:changeArr">改变数组</button>
+        <button v-on="click:showTab">明星</button>
+        <ul class="box" v-if="show">
+            <li><img src="./asserts/波多野结衣.jpg" alt=""></li>
+            <li><img src="./asserts/大桥未久.jpg" alt=""></li>
+        </ul>
     </div>
 </body>
 

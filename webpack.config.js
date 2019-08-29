@@ -39,7 +39,7 @@ module.exports = {
                 use: [{
                     loader: 'url-loader',
                     options: {
-                        limit: 1024 * 80
+                        limit: 1024 * 80,
                     }
                 }]
             },
@@ -53,6 +53,16 @@ module.exports = {
                     }
                 }
             },
+            {
+                test: /\.(html)$/,
+                use: [{
+                    loader: 'html-loader',
+                    options: {
+                        attrs: ['img:src', 'img:data-src']
+                    }
+                }]
+
+            }
         ]
     },
     optimization: {
